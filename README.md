@@ -131,6 +131,6 @@ python manage.py test
 - `API_REFERENCE.md`
 - `TESTING.md`
 - `DEPLOYMENT.md`
-- `THESIS_6_CHAPTER_MAPPING.md`
+- `THESIS_MAPPING.md`
 - `docs/DEMO_SCENARIO.md`
 - `docs/QR_PUBLIC_FLOW.md`
