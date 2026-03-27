@@ -50,14 +50,27 @@ class StudentUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
 
 
 class StudentViewSet(viewsets.ModelViewSet):
-    queryset = Student.objects.select_related("faculty", "academic_program").all()
     serializer_class = StudentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        qs = Student.objects.select_related("faculty", "academic_program")
+        user = self.request.user
+        if user.role == UserRole.STUDENT:
+            return qs.filter(user=user)
+        return qs.all()
+
 
 class StudentCourseRecordViewSet(viewsets.ModelViewSet):
-    queryset = StudentCourseRecord.objects.select_related("student", "course").all()
     serializer_class = StudentCourseRecordSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = StudentCourseRecord.objects.select_related("student", "course")
+        user = self.request.user
+        if user.role == UserRole.STUDENT:
+            return qs.filter(student__user=user)
+        return qs.all()
     permission_classes = [permissions.IsAuthenticated]
 
 

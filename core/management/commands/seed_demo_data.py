@@ -1,5 +1,8 @@
+import io
+import sys
 from pathlib import Path
 
+from cryptography.hazmat.primitives import serialization
 from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
@@ -32,6 +35,12 @@ class Command(BaseCommand):
         parser.add_argument("--no-flows", action="store_true", help="Chỉ seed data nền (users, tổ chức, sinh viên, rules) — không tạo credentials/issuance mẫu.")
 
     def handle(self, *args, **options):
+        # Ensure stdout can handle Vietnamese text on Windows consoles
+        if sys.platform == "win32" and hasattr(self.stdout, "reconfigure"):
+            try:
+                self.stdout.reconfigure(encoding="utf-8", errors="replace")
+            except Exception:
+                self.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
         if options["reset"]:
             self.stdout.write(self.style.WARNING("Flushing existing data..."))
             call_command("flush", "--noinput")
@@ -523,7 +532,11 @@ class Command(BaseCommand):
         if not private_key_path.exists():
             public_key_pem = generate_rsa_key_pair(str(private_key_path))
         else:
-            public_key_pem = generate_rsa_key_pair(str(private_key_path))
+            private_key = serialization.load_pem_private_key(private_key_path.read_bytes(), password=None)
+            public_key_pem = private_key.public_key().public_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo,
+            ).decode("utf-8")
         signing_key, _ = SigningKey.objects.update_or_create(
             organization=registrar_org,
             key_name="Demo Registrar Key",

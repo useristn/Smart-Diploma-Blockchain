@@ -30,7 +30,7 @@ class CredentialServiceTests(TestCase):
         cls.degree_template = CredentialTemplate.objects.get(code="TPL-DEGREE-V1")
         cls.signing_key = SigningKey.objects.get(key_name="Demo Registrar Key")
 
-    def _final_approved_request(self, student_code="SV001"):
+    def _final_approved_request(self, student_code="2001210001"):
         student = Student.objects.get(student_code=student_code)
         request_obj = create_issuance_request(
             student=student,
@@ -81,7 +81,7 @@ class CredentialServiceTests(TestCase):
         self.assertIsNotNone(source.superseded_by)
 
     def test_supersede_service_creates_new_credential(self):
-        request_obj = self._final_approved_request("SV002")
+        request_obj = self._final_approved_request("2001210002")
         credential = issue_credential_from_request(request_obj, self.registrar)
         sign_credential(credential, self.signing_key, self.signer, signer_title="Signer")
         publish_credential(credential, self.registrar)

@@ -21,7 +21,7 @@ class IssuanceWorkflowTests(TestCase):
         cls.degree_template = CredentialTemplate.objects.get(code="TPL-DEGREE-V1")
 
     def test_create_issuance_request(self):
-        student = Student.objects.get(student_code="SV004")
+        student = Student.objects.get(student_code="2101210004")
         request_obj = create_issuance_request(
             student=student,
             credential_type=self.degree_type,
@@ -33,7 +33,7 @@ class IssuanceWorkflowTests(TestCase):
         self.assertEqual(request_obj.approval_steps.count(), 5)
 
     def test_rule_evaluation_pass(self):
-        student = Student.objects.get(student_code="SV001")
+        student = Student.objects.get(student_code="2001210001")
         request_obj = create_issuance_request(
             student=student,
             credential_type=self.degree_type,
@@ -46,7 +46,7 @@ class IssuanceWorkflowTests(TestCase):
         self.assertEqual(request_obj.status, IssuanceRequestStatus.ACADEMIC_ELIGIBLE)
 
     def test_rule_evaluation_fail(self):
-        student = Student.objects.get(student_code="SV005")
+        student = Student.objects.get(student_code="2101210005")
         request_obj = create_issuance_request(
             student=student,
             credential_type=self.degree_type,
@@ -57,7 +57,7 @@ class IssuanceWorkflowTests(TestCase):
         self.assertFalse(summary["all_passed"])
 
     def test_approval_workflow_reaches_final_approved(self):
-        student = Student.objects.get(student_code="SV001")
+        student = Student.objects.get(student_code="2001210001")
         request_obj = create_issuance_request(
             student=student,
             credential_type=self.degree_type,

@@ -117,9 +117,17 @@ class SupersedeCredentialView(LoginRequiredMixin, RoleRequiredMixin, View):
 
 
 class CredentialViewSet(viewsets.ModelViewSet):
-    queryset = Credential.objects.select_related("student", "credential_type", "issuer_organization").all()
     serializer_class = CredentialSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = Credential.objects.select_related(
+            "student", "credential_type", "issuer_organization",
+        )
+        user = self.request.user
+        if user.role == UserRole.STUDENT:
+            return qs.filter(student__user=user)
+        return qs.all()
 
 
 class CredentialTypeViewSet(viewsets.ModelViewSet):
