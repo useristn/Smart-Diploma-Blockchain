@@ -46,16 +46,15 @@ class IssuanceRequestCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateVie
     success_url = reverse_lazy("issuance:list")
 
     def form_valid(self, form):
-        create_issuance_request(
+        req = create_issuance_request(
             student=form.cleaned_data["student"],
             credential_type=form.cleaned_data["credential_type"],
             template=form.cleaned_data["template"],
             requested_by=self.request.user,
             notes=form.cleaned_data.get("notes", ""),
         )
-        messages.success(self.request, "Đã tạo hồ sơ cấp phát.")
-        return redirect(self.success_url)
-        return redirect(self.success_url)
+        messages.success(self.request, f"Đã tạo hồ sơ cấp phát {req.request_code}.")
+        return redirect("issuance:detail", pk=req.pk)
 
 
 class IssuanceRequestDetailView(LoginRequiredMixin, DetailView):

@@ -10,18 +10,37 @@
 <div class="card shadow-sm">
     <div class="table-responsive">
         <table class="table align-middle mb-0">
-            <thead><tr><th>Mã</th><th>Sinh viên</th><th>Loại chứng chỉ</th><th>Trạng thái</th><th>Người tạo</th></tr></thead>
+            <thead>
+                <tr>
+                    <th>Mã hồ sơ</th>
+                    <th>Sinh viên</th>
+                    <th>Loại chứng chỉ</th>
+                    <th>Trạng thái</th>
+                    <th>Người tạo</th>
+                    <th>Thời gian tạo</th>
+                </tr>
+            </thead>
             <tbody>
                 {% for item in requests %}
                     <tr>
-                        <td><a href="{% url 'issuance:detail' item.pk %}">{{ item.request_code }}</a></td>
+                        <td><a href="{% url 'issuance:detail' item.pk %}" class="fw-semibold">{{ item.request_code }}</a></td>
                         <td>{{ item.student.full_name }}</td>
                         <td>{{ item.credential_type.name }}</td>
-                        <td>{{ item.get_status_display }}</td>
-                        <td>{{ item.requested_by }}</td>
+                        <td>
+                            <span class="badge
+                                {% if item.status == 'PUBLISHED' %}text-bg-success
+                                {% elif item.status == 'FINAL_APPROVED' %}text-bg-primary
+                                {% elif item.status == 'UNDER_REVIEW' or item.status == 'SUBMITTED' %}text-bg-warning text-dark
+                                {% elif item.status == 'REVOKED' %}text-bg-danger
+                                {% else %}text-bg-secondary{% endif %}">
+                                {{ item.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ item.requested_by.full_name|default:item.requested_by }}</td>
+                        <td class="text-muted small">{{ item.requested_at|date:"d/m/Y H:i" }}</td>
                     </tr>
                 {% empty %}
-                    <tr><td colspan="5" class="text-center py-4 text-muted">Chưa có hồ sơ.</td></tr>
+                    <tr><td colspan="6" class="text-center py-4 text-muted">Chưa có hồ sơ.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

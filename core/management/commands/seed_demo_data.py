@@ -29,13 +29,16 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--reset", action="store_true", help="Flush current data before seeding.")
+        parser.add_argument("--no-flows", action="store_true", help="Chỉ seed data nền (users, tổ chức, sinh viên, rules) — không tạo credentials/issuance mẫu.")
 
     def handle(self, *args, **options):
         if options["reset"]:
             self.stdout.write(self.style.WARNING("Flushing existing data..."))
             call_command("flush", "--noinput")
 
-        if Credential.objects.exists():
+        no_flows = options.get("no_flows", False)
+
+        if not no_flows and Credential.objects.exists():
             self.stdout.write(
                 self.style.WARNING(
                     "Demo credentials already exist. Use --reset to rebuild the full demo dataset."
@@ -51,9 +54,12 @@ class Command(BaseCommand):
         credential_types, templates = self._seed_credential_types()
         self._seed_policy_rules()
         signing_key = self._ensure_signing_key(organizations["registrar"])
-        self._seed_demo_flows(users, students, credential_types, templates, signing_key)
 
-        self.stdout.write(self.style.SUCCESS("Dữ liệu demo HCMUTE đã được khởi tạo thành công."))
+        if not no_flows:
+            self._seed_demo_flows(users, students, credential_types, templates, signing_key)
+            self.stdout.write(self.style.SUCCESS("Dữ liệu demo HCMUTE đã được khởi tạo thành công."))
+        else:
+            self.stdout.write(self.style.SUCCESS("Data nền đã được khởi tạo (không có credentials/issuance mẫu — sẵn sàng để demo trực tiếp)."))
         self.stdout.write("Tài khoản demo:")
         self.stdout.write("  admin / admin12345  (Đăng nhập quản trị)")
         self.stdout.write("  registrar / registrar12345  (Phòng Văn bằng)")
