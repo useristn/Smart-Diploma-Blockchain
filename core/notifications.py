@@ -15,7 +15,7 @@ def _send_notification(subject, template_name, context, recipient_email):
         return False
     try:
         context.setdefault("site_url", getattr(settings, "SITE_BASE_URL", ""))
-        context.setdefault("system_name", "Demo Blockchain Credential Ledger")
+        context.setdefault("system_name", "Hệ thống Quản lý Văn bằng số - HCMUTE")
         html_message = render_to_string(template_name, context)
         plain_message = strip_tags(html_message)
         send_mail(

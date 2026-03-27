@@ -136,8 +136,8 @@ Response:
   "credential_code": "CRD-XXXXXX",
   "verification_code": "VER-XXXXXX",
   "status": "VALID",
-  "owner_name": "Nguyễn Văn A",
-  "issuer_name": "Văn phòng Registrar",
+  "owner_name": "Nguyễn Thanh Nhật",
+  "issuer_name": "Phòng Công tác Sinh viên & Quản lý Văn bằng",
   "signature_valid": true,
   "ledger_valid": true
 }

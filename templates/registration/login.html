@@ -1,21 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Đăng nhập{% endblock %}
+{% block title %}Đăng nhập — {{ university_short }}{% endblock %}
 
 {% block public_content %}
 <div class="row justify-content-center">
     <div class="col-lg-5 col-xl-4">
         <div class="text-center mb-4">
-            <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width:56px;height:56px;background:linear-gradient(135deg,#3b82f6,#8b5cf6)">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3 login-logo-icon">
                 <i class="bi bi-shield-lock-fill text-white fs-3"></i>
             </div>
+            <h2 class="fw-bold text-white mb-1">{{ university_short }}</h2>
+            <p class="text-white-50 small mb-0">{{ university_name }}</p>
         </div>
-        <div class="card border-0 shadow-lg">
+        <div class="card border-0 shadow-lg login-card">
             <div class="card-body p-4 p-lg-5">
                 <div class="mb-4 text-center">
-                    <div class="text-uppercase small text-muted fw-semibold ls-wide">{{ system_short_name }}</div>
-                    <h1 class="h3 mb-1 fw-bold">Đăng nhập hệ thống</h1>
-                    <p class="text-muted mb-0 small">Nền tảng cấp phát và xác thực chứng chỉ số cho môi trường đại học.</p>
+                    <div class="text-uppercase small text-muted fw-semibold ls-wide mb-2">
+                        <i class="bi bi-mortarboard me-1"></i>Cổng quản lý văn bằng
+                    </div>
+                    <h1 class="h4 mb-1 fw-bold">Đăng nhập hệ thống</h1>
+                    <p class="text-muted mb-0 small">Nền tảng cấp phát và xác thực bằng tốt nghiệp số.</p>
                 </div>
                 <form method="post">
                     {% csrf_token %}
@@ -46,10 +50,15 @@
                         <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập
                     </button>
                 </form>
+                <div class="mt-4 pt-3 border-top text-center">
+                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'public_portal:home' %}">
+                        <i class="bi bi-globe2 me-1"></i>Cổng xác thực công khai
+                    </a>
+                </div>
             </div>
         </div>
-        <p class="text-center mt-3 small" style="color:#64748b">
-            <i class="bi bi-link-45deg"></i> Powered by Blockchain-Inspired Ledger
+        <p class="text-center mt-3 small text-white-50">
+            <i class="bi bi-shield-check me-1"></i>Bảo mật bởi Blockchain-Inspired Ledger
         </p>
     </div>
 </div>

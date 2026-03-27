@@ -1,61 +1,183 @@
 {% extends "base.html" %}
 
-{% block page_title %}Chi tiết sinh viên{% endblock %}
+{% block page_title %}{{ student.full_name }}{% endblock %}
 
 {% block content %}
-<div class="row g-4">
-    <div class="col-lg-5">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <div class="text-muted small">{{ student.student_code }}</div>
-                        <h2 class="h4 mb-0">{{ student.full_name }}</h2>
-                    </div>
-                    <a class="btn btn-outline-primary" href="{% url 'students:update' student.pk %}">Chỉnh sửa</a>
+
+<!-- Student header -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="d-flex align-items-center gap-4">
+            <div class="avatar-circle flex-shrink-0" style="width:64px;height:64px;font-size:1.6rem;border-radius:16px;">
+                {{ student.full_name|truncatechars:1 }}
+            </div>
+            <div class="flex-grow-1">
+                <div class="text-muted small mb-1">{{ student.student_code }} · {{ student.faculty.name }}</div>
+                <h2 class="h3 fw-bold mb-1">{{ student.full_name }}</h2>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge {% if student.status == 'GRADUATED' %}text-bg-success{% elif student.status == 'ACTIVE' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">
+                        <i class="bi bi-mortarboard me-1"></i>{{ student.get_status_display }}
+                    </span>
+                    {% if student.graduation_eligible %}
+                        <span class="badge text-bg-success"><i class="bi bi-check-circle me-1"></i>Đủ điều kiện tốt nghiệp</span>
+                    {% else %}
+                        <span class="badge text-bg-danger"><i class="bi bi-x-circle me-1"></i>Chưa đủ điều kiện</span>
+                    {% endif %}
+                    {% if student.finance_hold %}<span class="badge text-bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i>Hold tài chính</span>{% endif %}
+                    {% if student.discipline_hold %}<span class="badge text-bg-danger"><i class="bi bi-x-octagon me-1"></i>Hold kỷ luật</span>{% endif %}
                 </div>
-                <dl class="row mb-0">
-                    <dt class="col-sm-5">Chương trình</dt><dd class="col-sm-7">{{ student.academic_program.name }}</dd>
-                    <dt class="col-sm-5">Khoa</dt><dd class="col-sm-7">{{ student.faculty.name }}</dd>
-                    <dt class="col-sm-5">Tín chỉ</dt><dd class="col-sm-7">{{ student.credits_completed }}</dd>
-                    <dt class="col-sm-5">GPA</dt><dd class="col-sm-7">{{ student.gpa }}</dd>
-                    <dt class="col-sm-5">Finance hold</dt><dd class="col-sm-7">{{ student.finance_hold|yesno:"Có,Không" }}</dd>
-                    <dt class="col-sm-5">Discipline hold</dt><dd class="col-sm-7">{{ student.discipline_hold|yesno:"Có,Không" }}</dd>
-                    <dt class="col-sm-5">Graduation eligible</dt><dd class="col-sm-7">{{ student.graduation_eligible|yesno:"Có,Không" }}</dd>
+            </div>
+            <div class="d-none d-md-flex gap-3 text-center">
+                <div class="px-3 border-end">
+                    <div class="h4 fw-bold text-primary mb-0">{{ student.credits_completed }}</div>
+                    <div class="small text-muted">Tín chỉ tích luỹ</div>
+                </div>
+                <div class="px-3 border-end">
+                    <div class="h4 fw-bold {% if student.gpa >= 3.2 %}text-success{% elif student.gpa >= 2.5 %}text-warning{% else %}text-danger{% endif %} mb-0">{{ student.gpa }}</div>
+                    <div class="small text-muted">GPA</div>
+                </div>
+                <div class="px-3">
+                    <div class="h4 fw-bold text-info mb-0">{{ credentials|length }}</div>
+                    <div class="small text-muted">Văn bằng</div>
+                </div>
+            </div>
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'students:update' student.pk %}">
+                <i class="bi bi-pencil me-1"></i>Chỉnh sửa
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <!-- Info card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white d-flex align-items-center gap-2">
+                <i class="bi bi-person-badge text-primary"></i>
+                <strong>Thông tin cá nhân</strong>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0 small">
+                    <dt class="col-sm-5 text-muted">MSSV</dt>
+                    <dd class="col-sm-7 fw-semibold">{{ student.student_code }}</dd>
+
+                    <dt class="col-sm-5 text-muted">CMND/CCCD</dt>
+                    <dd class="col-sm-7">{{ student.national_id|default:"—" }}</dd>
+
+                    <dt class="col-sm-5 text-muted">Ngày sinh</dt>
+                    <dd class="col-sm-7">{{ student.date_of_birth|date:"d/m/Y"|default:"—" }}</dd>
+
+                    <dt class="col-sm-5 text-muted">Email</dt>
+                    <dd class="col-sm-7">{{ student.email }}</dd>
+
+                    <dt class="col-sm-5 text-muted">Chuyên ngành</dt>
+                    <dd class="col-sm-7">{{ student.academic_program.name }}</dd>
+
+                    <dt class="col-sm-5 text-muted">Khoa</dt>
+                    <dd class="col-sm-7">{{ student.faculty.name }}</dd>
+
+                    <dt class="col-sm-5 text-muted">Khoá</dt>
+                    <dd class="col-sm-7">{{ student.cohort }}</dd>
                 </dl>
             </div>
         </div>
+
+        <!-- Academic progress -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex align-items-center gap-2">
+                <i class="bi bi-bar-chart-line text-success"></i>
+                <strong>Tiến độ học tập</strong>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="text-muted">Tín chỉ tích luỹ</span>
+                        <span class="fw-semibold">{{ student.credits_completed }} / {{ student.academic_program.total_required_credits }}</span>
+                    </div>
+                    <div class="progress" style="height:8px;border-radius:4px">
+                        <div class="progress-bar {% if student.credits_completed >= student.academic_program.total_required_credits %}bg-success{% else %}bg-primary{% endif %}"
+                             style="width:{% widthratio student.credits_completed student.academic_program.total_required_credits 100 %}%"></div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="text-muted">GPA yêu cầu tối thiểu</span>
+                        <span class="fw-semibold">{{ student.gpa }} / {{ student.academic_program.min_gpa }}</span>
+                    </div>
+                    <div class="progress" style="height:8px;border-radius:4px">
+                        <div class="progress-bar {% if student.gpa >= student.academic_program.min_gpa %}bg-success{% else %}bg-danger{% endif %}"
+                             style="width:{% widthratio student.gpa 4.0 100 %}%"></div>
+                    </div>
+                </div>
+                {% if student.graduation_status %}
+                <div class="alert {% if student.graduation_eligible %}alert-success{% else %}alert-warning{% endif %} py-2 px-3 mb-0 small">
+                    <i class="bi bi-info-circle me-1"></i>{{ student.graduation_status }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <div class="col-lg-7">
+
+    <div class="col-lg-8">
+        <!-- Course records -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white"><strong>Kết quả học phần</strong></div>
+            <div class="card-header bg-white d-flex align-items-center gap-2">
+                <i class="bi bi-book text-info"></i>
+                <strong>Kết quả học phần</strong>
+                <span class="badge text-bg-secondary ms-1">{{ course_records|length }}</span>
+            </div>
             <div class="table-responsive">
                 <table class="table mb-0">
-                    <thead><tr><th>Học phần</th><th>Điểm</th><th>Qua môn</th><th>Kỳ</th><th>Năm</th></tr></thead>
+                    <thead>
+                        <tr><th>Học phần</th><th class="text-center">Điểm</th><th class="text-center">Qua môn</th><th>Học kỳ</th><th>Năm</th></tr>
+                    </thead>
                     <tbody>
                         {% for record in course_records %}
-                            <tr><td>{{ record.course.name }}</td><td>{{ record.grade }}</td><td>{{ record.passed|yesno:"Có,Không" }}</td><td>{{ record.term }}</td><td>{{ record.year }}</td></tr>
+                            <tr>
+                                <td>{{ record.course.name }}</td>
+                                <td class="text-center">
+                                    <span class="badge {% if record.grade == 'A' %}text-bg-success{% elif record.grade == 'B' %}text-bg-primary{% elif record.grade == 'C' %}text-bg-warning text-dark{% else %}text-bg-danger{% endif %}">
+                                        {{ record.grade }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    {% if record.passed %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle-fill text-danger"></i>{% endif %}
+                                </td>
+                                <td>{{ record.term }}</td>
+                                <td>{{ record.year }}</td>
+                            </tr>
                         {% empty %}
-                            <tr><td colspan="5" class="text-center py-4 text-muted">Chưa có transcript.</td></tr>
+                            <tr><td colspan="5" class="text-center py-4 text-muted"><i class="bi bi-inbox me-1"></i>Chưa có bảng điểm.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- Credentials issued -->
         <div class="card shadow-sm">
-            <div class="card-header bg-white"><strong>Chứng chỉ đã cấp</strong></div>
+            <div class="card-header bg-white d-flex align-items-center gap-2">
+                <i class="bi bi-award text-warning"></i>
+                <strong>Văn bằng đã cấp</strong>
+                <span class="badge text-bg-secondary ms-1">{{ credentials|length }}</span>
+            </div>
             <div class="table-responsive">
                 <table class="table mb-0">
-                    <thead><tr><th>Mã</th><th>Loại</th><th>Trạng thái</th></tr></thead>
+                    <thead><tr><th>Mã văn bằng</th><th>Loại</th><th>Trạng thái</th><th>Ngày cấp</th></tr></thead>
                     <tbody>
                         {% for credential in credentials %}
                             <tr>
-                                <td><a href="{% url 'credentials:detail' credential.pk %}">{{ credential.credential_code }}</a></td>
-                                <td>{{ credential.credential_type.name }}</td>
-                                <td>{{ credential.get_current_status_display }}</td>
+                                <td><a href="{% url 'credentials:detail' credential.pk %}" class="fw-semibold">{{ credential.credential_code }}</a></td>
+                                <td><span class="small text-muted">{{ credential.credential_type.name }}</span></td>
+                                <td>
+                                    <span class="badge {% if credential.current_status == 'PUBLISHED' %}text-bg-success{% elif credential.current_status == 'REVOKED' %}text-bg-danger{% elif credential.current_status == 'SIGNED' %}text-bg-info{% elif credential.current_status == 'SUPERSEDED' %}text-bg-warning text-dark{% else %}text-bg-secondary{% endif %}">
+                                        {{ credential.get_current_status_display }}
+                                    </span>
+                                </td>
+                                <td class="small text-muted">{{ credential.issued_at|date:"d/m/Y"|default:"—" }}</td>
                             </tr>
                         {% empty %}
-                            <tr><td colspan="3" class="text-center py-4 text-muted">Chưa có chứng chỉ.</td></tr>
+                            <tr><td colspan="4" class="text-center py-4 text-muted"><i class="bi bi-inbox me-1"></i>Chưa có văn bằng.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>

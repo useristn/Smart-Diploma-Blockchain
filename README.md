@@ -1,4 +1,4 @@
-# Demo Blockchain Credential Ledger
+# Hệ thống Quản lý Văn bằng số - HCMUTE
 
 Hệ thống Django full-stack phục vụ đồ án:
 
@@ -85,8 +85,9 @@ Tài khoản:
 - `faculty / faculty12345`
 - `signer / signer12345`
 - `auditor / auditor12345`
-- `studenta / student12345`
-- `studentb / student12345`
+- `ntnhat / student12345` (Nguyễn Thanh Nhật)
+- `nmkhoi / student12345` (Nguyễn Minh Khôi)
+- `tdhoa / student12345` (Trần Doãn Hòa)
 
 Kịch bản demo được seed sẵn:
 

@@ -432,3 +432,167 @@ a:not(.btn):not(.nav-link):not(.sidebar-brand):hover {
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-track { background: transparent; }
 .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+/* ===== Login page enhancements ===== */
+.login-logo-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+}
+
+.login-card {
+    border-radius: var(--radius-xl) !important;
+}
+
+/* ===== University banner ===== */
+.uni-banner {
+    background: linear-gradient(135deg, rgba(59,130,246,.08) 0%, rgba(139,92,246,.06) 100%);
+    border: 1px solid rgba(59,130,246,.15);
+    border-radius: var(--radius-lg);
+}
+
+/* ===== Enhanced KPI cards ===== */
+.kpi-card {
+    border-left: 4px solid var(--accent);
+    transition: transform var(--transition), box-shadow var(--transition);
+    border-radius: var(--radius-lg) !important;
+    overflow: hidden;
+}
+
+.kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.kpi-card .display-6 {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+/* ===== Progress bars ===== */
+.progress {
+    background-color: rgba(0,0,0,0.06);
+    border-radius: 4px;
+}
+
+.progress-bar {
+    transition: width 0.8s ease;
+    border-radius: 4px;
+}
+
+/* ===== Student avatar ===== */
+.avatar-circle {
+    background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    width: 2.2rem;
+    height: 2.2rem;
+}
+.avatar-circle--sm {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.68rem;
+}
+
+/* ===== Status badge colours ===== */
+.badge.text-bg-published { background: #22c55e; color: #fff; }
+.badge.text-bg-revoked   { background: #ef4444; color: #fff; }
+.badge.text-bg-signed    { background: #06b6d4; color: #fff; }
+
+/* ===== Card hover accent ===== */
+.card-hoverable {
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    cursor: pointer;
+}
+.card-hoverable:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(59,130,246,.3) !important;
+}
+
+/* ===== Empty state ===== */
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.empty-state .empty-icon {
+    font-size: 2.5rem;
+    opacity: 0.4;
+    margin-bottom: 0.5rem;
+}
+
+/* ===== Ledger chain visualization ===== */
+.hash-chain-link {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    word-break: break-all;
+    background: #f8fafc;
+    border-radius: var(--radius-sm);
+    padding: 0.25rem 0.5rem;
+    color: var(--text-muted);
+}
+
+/* ===== Detail page section headers ===== */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1rem;
+    background: #fff;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* ===== Topbar subtitle ===== */
+.topbar .page-subtitle {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* ===== Public shell improvements ===== */
+.public-shell {
+    background:
+        radial-gradient(ellipse at 15% 85%, rgba(59, 130, 246, 0.18) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 15%, rgba(139, 92, 246, 0.14) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(30, 64, 175, 0.1) 0%, transparent 70%),
+        linear-gradient(160deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+    min-height: 100vh;
+}
+
+/* ===== Verification result page ===== */
+.verify-result-banner {
+    border-radius: var(--radius-xl);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.verify-result-valid {
+    background: linear-gradient(135deg, rgba(34,197,94,.1) 0%, rgba(16,185,129,.05) 100%);
+    border: 2px solid rgba(34,197,94,.3);
+}
+
+.verify-result-invalid {
+    background: linear-gradient(135deg, rgba(239,68,68,.1) 0%, rgba(220,38,38,.05) 100%);
+    border: 2px solid rgba(239,68,68,.3);
+}
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 767.98px) {
+    .kpi-card .display-6 { font-size: 1.8rem; }
+    .topbar h1 { font-size: 1rem; }
+}
+

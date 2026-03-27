@@ -871,18 +871,17 @@ XI. QUY TRÌNH NGHIỆP VỤ END-TO-END PHẢI DEMO ĐƯỢC
 Tạo sẵn dữ liệu demo cho một kịch bản đầy đủ như sau:
 
 Tổ chức:
-- Đại học Demo Blockchain
-- Phòng Đào Tạo
+- Trường Đại học Sư phạm Kỹ thuật TP.HCM (HCMUTE)
+- Phòng Đào tạo
+- Phòng Công tác Sinh viên & Quản lý Văn bằng
 - Khoa Công nghệ Thông tin
-- Bộ môn Hệ thống thông tin
-- Phòng Khảo thí
-- Văn phòng Registrar
-- Phòng Kiểm định & QA
+- Phòng Khảo thí & Đảm bảo chất lượng
+- Phòng Kiểm định & Đảm bảo chất lượng
 
 Sinh viên mẫu:
-- Nguyễn Văn A
-- Trần Thị B
-- Lê Minh C
+- Nguyễn Thanh Nhật (2001210001)
+- Nguyễn Minh Khôi (2001210002)
+- Trần Doãn Hòa (2001210003)
 
 Credential types:
 - Bằng tốt nghiệp đại học
@@ -1276,16 +1275,17 @@ Users:
 - faculty / faculty12345
 - signer / signer12345
 - auditor / auditor12345
-- studenta / student12345
-- studentb / student12345
+- ntnhat / student12345
+- nmkhoi / student12345
+- tdhoa / student12345
 
 Organizations:
-- Đại học Demo Blockchain
-- Phòng Đào Tạo
+- Trường Đại học Sư phạm Kỹ thuật TP.HCM (HCMUTE)
+- Phòng Đào tạo
+- Phòng Công tác Sinh viên & Quản lý Văn bằng
 - Khoa Công nghệ Thông tin
-- Phòng Khảo thí
-- Văn phòng Registrar
-- Phòng Kiểm định QA
+- Phòng Khảo thí & Đảm bảo chất lượng
+- Phòng Kiểm định & Đảm bảo chất lượng
 
 Programs:
 - Công nghệ thông tin

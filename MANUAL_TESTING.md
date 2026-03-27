@@ -63,8 +63,9 @@ python manage.py runserver
 | faculty | faculty12345 | FACULTY_ADMIN | Quản lý khoa, duyệt bước academic |
 | signer | signer12345 | SIGNER | Ký số chứng chỉ |
 | auditor | auditor12345 | AUDITOR | Kiểm toán, duyệt bước discipline |
-| studenta | student12345 | STUDENT | Sinh viên Nguyễn Văn A |
-| studentb | student12345 | STUDENT | Sinh viên Trần Thị B |
+| ntnhat | student12345 | STUDENT | Nguyễn Thanh Nhật (2001210001) |
+| nmkhoi | student12345 | STUDENT | Nguyễn Minh Khôi (2001210002) |
+| tdhoa | student12345 | STUDENT | Trần Doãn Hòa (2001210003) |
 
 ---
 
@@ -213,7 +214,7 @@ python manage.py runserver
 | # | Bước | Kết quả mong đợi | Pass/Fail |
 |---|------|------------------|-----------|
 | 1 | Đăng nhập `faculty`, vào `/cap-phat/tao/` | Hiển thị form tạo issuance request | ☐ |
-| 2 | Chọn: Student=`Nguyễn Văn A`, Credential Type, Template | Form hợp lệ | ☐ |
+| 2 | Chọn: Student=`Nguyễn Thanh Nhật`, Credential Type, Template | Form hợp lệ | ☐ |
 | 3 | Submit | Tạo thành công, status = `SUBMITTED` | ☐ |
 | 4 | Kiểm tra 5 approval steps tự động tạo | ACADEMIC, EXAMINATION, FINANCE, DISCIPLINE, REGISTRAR đều ở PENDING | ☐ |
 | 5 | Kiểm tra LedgerEvent mới: `ISSUANCE_REQUEST_CREATED` | Event xuất hiện trong sổ cái | ☐ |

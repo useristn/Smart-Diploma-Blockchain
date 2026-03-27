@@ -53,22 +53,25 @@ class Command(BaseCommand):
         signing_key = self._ensure_signing_key(organizations["registrar"])
         self._seed_demo_flows(users, students, credential_types, templates, signing_key)
 
-        self.stdout.write(self.style.SUCCESS("Demo data seeded successfully."))
-        self.stdout.write("Demo users:")
-        self.stdout.write("  admin / admin12345")
-        self.stdout.write("  registrar / registrar12345")
-        self.stdout.write("  faculty / faculty12345")
-        self.stdout.write("  signer / signer12345")
-        self.stdout.write("  auditor / auditor12345")
-        self.stdout.write("  studenta / student12345")
-        self.stdout.write("  studentb / student12345")
+        self.stdout.write(self.style.SUCCESS("Dữ liệu demo HCMUTE đã được khởi tạo thành công."))
+        self.stdout.write("Tài khoản demo:")
+        self.stdout.write("  admin / admin12345  (Đăng nhập quản trị)")
+        self.stdout.write("  registrar / registrar12345  (Phòng Văn bằng)")
+        self.stdout.write("  faculty / faculty12345  (Khoa CNTT)")
+        self.stdout.write("  signer / signer12345  (Ký số)")
+        self.stdout.write("  auditor / auditor12345  (Kiểm định chất lượng)")
+        self.stdout.write("  ntnhat / student12345  (Nguyễn Thanh Nhật)")
+        self.stdout.write("  nmkhoi / student12345  (Nguyễn Minh Khôi)")
+        self.stdout.write("  tdhoa / student12345  (Trần Doãn Hòa)")
 
     def _seed_organizations(self):
         university, _ = Organization.objects.update_or_create(
-            code="UNI",
+            code="HCMUTE",
             defaults={
-                "name": "Đại học Demo Blockchain",
+                "name": "Trường Đại học Công nghệ Kỹ thuật TP.HCM",
                 "organization_type": OrganizationType.UNIVERSITY,
+                "contact_email": "daotao@hcmute.edu.vn",
+                "address": "01 Võ Văn Ngân, P. Linh Chiểu, TP. Thủ Đức, TP.HCM",
                 "can_write_ledger": True,
                 "can_approve": True,
                 "is_validator": True,
@@ -81,6 +84,7 @@ class Command(BaseCommand):
                 "name": "Phòng Đào Tạo",
                 "organization_type": OrganizationType.TRAINING_OFFICE,
                 "parent": university,
+                "contact_email": "phongdaotao@hcmute.edu.vn",
                 "can_write_ledger": True,
                 "can_approve": True,
                 "is_validator": True,
@@ -92,6 +96,7 @@ class Command(BaseCommand):
                 "name": "Khoa Công nghệ Thông tin",
                 "organization_type": OrganizationType.FACULTY,
                 "parent": university,
+                "contact_email": "khoaCNTT@hcmute.edu.vn",
                 "can_write_ledger": True,
                 "can_approve": True,
                 "is_validator": True,
@@ -111,9 +116,10 @@ class Command(BaseCommand):
         examination, _ = Organization.objects.update_or_create(
             code="EXAM",
             defaults={
-                "name": "Phòng Khảo thí",
+                "name": "Phòng Khảo thí & Đảm bảo chất lượng",
                 "organization_type": OrganizationType.EXAMINATION_OFFICE,
                 "parent": university,
+                "contact_email": "khaothi@hcmute.edu.vn",
                 "can_write_ledger": True,
                 "can_approve": True,
                 "is_validator": True,
@@ -122,9 +128,10 @@ class Command(BaseCommand):
         registrar, _ = Organization.objects.update_or_create(
             code="REG",
             defaults={
-                "name": "Văn phòng Registrar",
+                "name": "Phòng Công tác Sinh viên & Quản lý Văn bằng",
                 "organization_type": OrganizationType.REGISTRAR,
                 "parent": university,
+                "contact_email": "vanbang@hcmute.edu.vn",
                 "can_write_ledger": True,
                 "can_approve": True,
                 "is_validator": True,
@@ -133,9 +140,10 @@ class Command(BaseCommand):
         qa, _ = Organization.objects.update_or_create(
             code="QA",
             defaults={
-                "name": "Phòng Kiểm định QA",
+                "name": "Phòng Kiểm định & Đảm bảo chất lượng",
                 "organization_type": OrganizationType.QA,
                 "parent": university,
+                "contact_email": "kiemdinhcl@hcmute.edu.vn",
                 "can_write_ledger": True,
                 "can_approve": True,
                 "is_validator": True,
@@ -181,8 +189,8 @@ class Command(BaseCommand):
                 "admin12345",
                 UserRole.SYSTEM_ADMIN,
                 organizations["university"],
-                "System Admin",
-                "admin@demo-blockchain.edu.vn",
+                "Quản trị hệ thống",
+                "admin@hcmute.edu.vn",
                 is_superuser=True,
             ),
             "registrar": self._create_user(
@@ -190,32 +198,32 @@ class Command(BaseCommand):
                 "registrar12345",
                 UserRole.REGISTRAR,
                 organizations["registrar"],
-                "Registrar Officer",
-                "registrar@demo-blockchain.edu.vn",
+                "Nguyễn Thị Hương",
+                "vanbang@hcmute.edu.vn",
             ),
             "faculty": self._create_user(
                 "faculty",
                 "faculty12345",
                 UserRole.FACULTY_ADMIN,
                 organizations["faculty"],
-                "Faculty Officer",
-                "faculty@demo-blockchain.edu.vn",
+                "Trần Văn Minh",
+                "khoaCNTT@hcmute.edu.vn",
             ),
             "signer": self._create_user(
                 "signer",
                 "signer12345",
                 UserRole.SIGNER,
                 organizations["registrar"],
-                "Signing Officer",
-                "signer@demo-blockchain.edu.vn",
+                "Lê Thị Mai",
+                "kyso@hcmute.edu.vn",
             ),
             "auditor": self._create_user(
                 "auditor",
                 "auditor12345",
                 UserRole.AUDITOR,
                 organizations["qa"],
-                "QA Auditor",
-                "auditor@demo-blockchain.edu.vn",
+                "Phạm Anh Tuấn",
+                "kiemdinhcl@hcmute.edu.vn",
             ),
         }
         return users
@@ -282,86 +290,96 @@ class Command(BaseCommand):
         return user
 
     def _seed_students(self, organizations, programs, users):
-        studenta_user = self._create_student_user("studenta", "Nguyễn Văn A", "studenta@demo.edu.vn")
-        studentb_user = self._create_student_user("studentb", "Trần Thị B", "studentb@demo.edu.vn")
+        studenta_user = self._create_student_user("ntnhat", "Nguyễn Thanh Nhật", "ntnhat@hcmute.edu.vn")
+        studentb_user = self._create_student_user("nmkhoi", "Nguyễn Minh Khôi", "nmkhoi@hcmute.edu.vn")
+        studentc_user = self._create_student_user("tdhoa", "Trần Doãn Hòa", "tdhoa@hcmute.edu.vn")
 
         students = {
             "a": Student.objects.update_or_create(
-                student_code="SV001",
+                student_code="2001210001",
                 defaults={
-                    "full_name": "Nguyễn Văn A",
-                    "date_of_birth": "2002-01-10",
-                    "email": "studenta@demo.edu.vn",
+                    "full_name": "Nguyễn Thanh Nhật",
+                    "date_of_birth": "2002-05-15",
+                    "email": "ntnhat@hcmute.edu.vn",
+                    "national_id": "079202001234",
                     "user": studenta_user,
                     "faculty": organizations["faculty"],
                     "academic_program": programs["it"],
                     "cohort": "K20",
+                    "status": "GRADUATED",
                     "credits_completed": 128,
-                    "gpa": 3.40,
+                    "gpa": 3.55,
                     "graduation_eligible": True,
-                    "graduation_status": "Eligible",
+                    "graduation_status": "Đủ điều kiện tốt nghiệp",
                 },
             )[0],
             "b": Student.objects.update_or_create(
-                student_code="SV002",
+                student_code="2001210002",
                 defaults={
-                    "full_name": "Trần Thị B",
-                    "date_of_birth": "2002-04-14",
-                    "email": "studentb@demo.edu.vn",
+                    "full_name": "Nguyễn Minh Khôi",
+                    "date_of_birth": "2002-08-20",
+                    "email": "nmkhoi@hcmute.edu.vn",
+                    "national_id": "079202001235",
                     "user": studentb_user,
                     "faculty": organizations["faculty"],
                     "academic_program": programs["is"],
                     "cohort": "K20",
+                    "status": "GRADUATED",
                     "credits_completed": 124,
-                    "gpa": 3.10,
+                    "gpa": 3.20,
                     "graduation_eligible": True,
-                    "graduation_status": "Eligible",
+                    "graduation_status": "Đủ điều kiện tốt nghiệp",
                 },
             )[0],
             "c": Student.objects.update_or_create(
-                student_code="SV003",
+                student_code="2001210003",
                 defaults={
-                    "full_name": "Lê Minh C",
-                    "date_of_birth": "2002-08-22",
-                    "email": "studentc@demo.edu.vn",
+                    "full_name": "Trần Doãn Hòa",
+                    "date_of_birth": "2002-11-03",
+                    "email": "tdhoa@hcmute.edu.vn",
+                    "national_id": "079202001236",
+                    "user": studentc_user,
                     "faculty": organizations["faculty"],
                     "academic_program": programs["it"],
                     "cohort": "K20",
+                    "status": "GRADUATED",
                     "credits_completed": 130,
-                    "gpa": 3.55,
+                    "gpa": 3.75,
                     "graduation_eligible": True,
-                    "graduation_status": "Eligible",
+                    "graduation_status": "Đủ điều kiện tốt nghiệp",
                 },
             )[0],
             "d": Student.objects.update_or_create(
-                student_code="SV004",
+                student_code="2101210004",
                 defaults={
-                    "full_name": "Phạm Thị D",
-                    "date_of_birth": "2003-03-03",
-                    "email": "studentd@demo.edu.vn",
+                    "full_name": "Phạm Thị Thu Hà",
+                    "date_of_birth": "2003-03-25",
+                    "email": "ptthuha@hcmute.edu.vn",
                     "faculty": organizations["faculty"],
                     "academic_program": programs["it"],
                     "cohort": "K21",
+                    "status": "ACTIVE",
                     "credits_completed": 90,
                     "gpa": 2.00,
                     "graduation_eligible": False,
-                    "graduation_status": "Not eligible",
+                    "graduation_status": "Chưa đủ điều kiện",
                 },
             )[0],
             "e": Student.objects.update_or_create(
-                student_code="SV005",
+                student_code="2101210005",
                 defaults={
-                    "full_name": "Hoàng Văn E",
-                    "date_of_birth": "2003-06-18",
-                    "email": "studente@demo.edu.vn",
+                    "full_name": "Lê Quang Huy",
+                    "date_of_birth": "2003-07-10",
+                    "email": "lqhuy@hcmute.edu.vn",
                     "faculty": organizations["faculty"],
                     "academic_program": programs["ds"],
                     "cohort": "K21",
+                    "status": "ACTIVE",
                     "credits_completed": 125,
                     "gpa": 2.85,
                     "finance_hold": True,
                     "graduation_eligible": False,
-                    "graduation_status": "Finance hold",
+                    "graduation_status": "Đang có hold tài chính",
                 },
             )[0],
         }
@@ -571,8 +589,8 @@ class Command(BaseCommand):
         supersede_credential(
             superseded_source,
             actor_user=users["registrar"],
-            corrected_payload_updates={"student": {"full_name": "Lê Minh C (Corrected)"}},
-            notes="Corrected typo in student name.",
+            corrected_payload_updates={"student": {"full_name": "Trần Doãn Hòa (Đã cập nhật)"}},
+            notes="Cập nhật thông tin sinh viên sau khi rà soát.",
         )
 
         fail_request = create_issuance_request(

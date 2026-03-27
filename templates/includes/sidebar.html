@@ -1,9 +1,9 @@
-<aside class="sidebar border-end p-3">
+<aside class="sidebar border-end p-3 d-flex flex-column">
     <a href="{% url 'core:dashboard' %}" class="sidebar-brand d-flex align-items-center gap-2 text-decoration-none mb-4">
         <div class="brand-icon"><i class="bi bi-shield-lock-fill"></i></div>
         <div>
-            <div class="brand-text">Credential Ledger</div>
-            <div class="brand-sub">{{ system_short_name }}</div>
+            <div class="brand-text">{{ university_short }}</div>
+            <div class="brand-sub">Hệ thống Văn bằng số</div>
         </div>
     </a>
 
@@ -81,4 +81,19 @@
         </a>
     </nav>
     {% endif %}
+
+    <div class="mt-auto pt-3 border-top">
+        <div class="d-flex align-items-center gap-2 px-1 py-2 mb-1">
+            <div class="avatar-circle avatar-circle--sm flex-shrink-0">
+                {{ request.user.full_name|default:request.user.username|truncatechars:1 }}
+            </div>
+            <div class="small overflow-hidden">
+                <div class="fw-semibold text-truncate">{{ request.user.full_name|default:request.user.username }}</div>
+                <div class="text-muted" style="font-size:.7rem">{{ request.user.get_role_display }}</div>
+            </div>
+        </div>
+        <a class="nav-link text-danger d-flex align-items-center gap-2" href="{% url 'accounts:logout' %}">
+            <i class="bi bi-box-arrow-right"></i> Đăng xuất
+        </a>
+    </div>
 </aside>
