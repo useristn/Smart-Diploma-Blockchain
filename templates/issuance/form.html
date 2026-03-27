@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block page_title %}Tạo hồ sơ cấp phát{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary" type="submit">Tạo hồ sơ</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

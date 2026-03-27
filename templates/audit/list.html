@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block page_title %}Audit log{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Action</th><th>Object</th><th>Người dùng</th><th>Thời gian</th></tr></thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td>{{ log.action }}</td>
+                        <td>{{ log.object_type }} / {{ log.object_id|truncatechars:12 }}</td>
+                        <td>{{ log.user|default:"System" }}</td>
+                        <td>{{ log.created_at|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-center py-4 text-muted">Chưa có audit log.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

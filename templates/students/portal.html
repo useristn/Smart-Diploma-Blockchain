@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block page_title %}Cổng sinh viên{% endblock %}
+
+{% block content %}
+{% if not student %}
+<div class="alert alert-warning d-flex gap-2 align-items-center">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    Tài khoản của bạn chưa được liên kết với hồ sơ sinh viên. Vui lòng liên hệ Phòng đào tạo.
+</div>
+{% else %}
+
+<!-- Student profile card -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center py-4">
+                <div class="avatar-circle mx-auto mb-3" style="width:56px;height:56px;font-size:1.5rem;">
+                    {{ student.full_name|truncatechars:1 }}
+                </div>
+                <h5 class="fw-bold mb-0">{{ student.full_name }}</h5>
+                <div class="text-muted small mb-3">{{ student.student_code }}</div>
+                <hr>
+                <dl class="text-start mb-0">
+                    <dt class="small text-muted">Chương trình</dt>
+                    <dd class="small mb-2">{{ student.academic_program.name }}</dd>
+
+                    <dt class="small text-muted">Khoa</dt>
+                    <dd class="small mb-2">{{ student.faculty.name }}</dd>
+
+                    <dt class="small text-muted">Khoá</dt>
+                    <dd class="small mb-2">{{ student.cohort }}</dd>
+
+                    <dt class="small text-muted">Trạng thái</dt>
+                    <dd class="small mb-2">
+                        <span class="badge text-bg-{% if student.status == 'GRADUATED' %}success{% elif student.status == 'ACTIVE' %}primary{% else %}secondary{% endif %}">
+                            {{ student.get_status_display }}
+                        </span>
+                    </dd>
+
+                    <dt class="small text-muted">GPA</dt>
+                    <dd class="small mb-2"><strong>{{ student.gpa }}</strong></dd>
+
+                    <dt class="small text-muted">Tín chỉ tích lũy</dt>
+                    <dd class="small mb-0"><strong>{{ student.credits_completed }}</strong></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <!-- Hold warnings -->
+        {% if student.finance_hold or student.discipline_hold %}
+        <div class="alert alert-danger d-flex gap-2 align-items-center mb-3">
+            <i class="bi bi-exclamation-octagon-fill fs-5 flex-shrink-0"></i>
+            <div>
+                <strong>Tài khoản đang bị hold:</strong>
+                {% if student.finance_hold %}<span class="badge text-bg-danger ms-1">Tài chính</span>{% endif %}
+                {% if student.discipline_hold %}<span class="badge text-bg-warning text-dark ms-1">Kỷ luật</span>{% endif %}
+                <div class="small mt-1">Liên hệ Phòng đào tạo để giải quyết trước khi nhận chứng chỉ.</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- KPI row -->
+        <div class="row g-3 mb-3">
+            <div class="col-sm-4">
+                <div class="card text-center border-primary border-opacity-25 h-100">
+                    <div class="card-body py-3">
+                        <div class="display-6 fw-bold text-primary">{{ credentials|length }}</div>
+                        <div class="small text-muted">Chứng chỉ</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card text-center border-success border-opacity-25 h-100">
+                    <div class="card-body py-3">
+                        <div class="display-6 fw-bold text-success">
+                            {{ credentials|length }}
+                        </div>
+                        <div class="small text-muted">Đã công bố</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card text-center h-100">
+                    <div class="card-body py-3">
+                        <div class="display-6 fw-bold">{{ issuance_requests|length }}</div>
+                        <div class="small text-muted">Hồ sơ đã nộp</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Credentials list -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white d-flex align-items-center gap-2">
+        <i class="bi bi-award text-success"></i>
+        <strong>Chứng chỉ của tôi</strong>
+    </div>
+    {% if credentials %}
+        <div class="row g-3 p-3">
+            {% for cred in credentials %}
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100 border-{% if cred.current_status == 'PUBLISHED' %}success{% elif cred.current_status == 'REVOKED' %}danger{% else %}secondary{% endif %} border-opacity-50">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="fw-semibold">{{ cred.credential_type.name }}</div>
+                                <span class="badge text-bg-{% if cred.current_status == 'PUBLISHED' %}success{% elif cred.current_status == 'REVOKED' %}danger{% elif cred.current_status == 'SIGNED' %}info{% else %}secondary{% endif %}">
+                                    {{ cred.get_current_status_display }}
+                                </span>
+                            </div>
+                            <div class="small text-muted mb-1">
+                                <i class="bi bi-hash me-1"></i>{{ cred.credential_code }}
+                            </div>
+                            <div class="small text-muted mb-1">
+                                <i class="bi bi-building me-1"></i>{{ cred.issuer_organization.name }}
+                            </div>
+                            {% if cred.issued_at %}
+                                <div class="small text-muted mb-3">
+                                    <i class="bi bi-calendar me-1"></i>{{ cred.issued_at|date:"d/m/Y" }}
+                                </div>
+                            {% endif %}
+                            {% if cred.current_status == 'PUBLISHED' %}
+                                <div class="d-flex flex-column gap-2">
+                                    <a class="btn btn-sm btn-outline-success"
+                                       href="{% url 'public_portal:detail' slug=cred.public_slug %}"
+                                       target="_blank">
+                                        <i class="bi bi-shield-check me-1"></i>Xac thực công khai
+                                    </a>
+                                    {% if cred.pdf_file %}
+                                        <a class="btn btn-sm btn-outline-primary"
+                                           href="{{ cred.pdf_file.url }}" target="_blank" download>
+                                            <i class="bi bi-file-earmark-pdf me-1"></i>Tải PDF
+                                        </a>
+                                    {% endif %}
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control font-monospace"
+                                               value="{{ cred.verification_code }}" readonly id="vc-{{ cred.pk }}">
+                                        <button class="btn btn-outline-secondary" type="button"
+                                                onclick="navigator.clipboard.writeText('{{ cred.verification_code }}');this.innerHTML='<i class=\'bi bi-check2\'></i>'">
+                                            <i class="bi bi-clipboard"></i>
+                                        </button>
+                                    </div>
+                                    <div class="form-text">Verification code để bên thứ ba tra cứu</div>
+                                    {% if cred.qr_image %}
+                                        <img src="{{ cred.qr_image.url }}" alt="QR" class="img-fluid mt-1" style="max-width:120px;">
+                                    {% endif %}
+                                </div>
+                            {% elif cred.current_status == 'REVOKED' %}
+                                <div class="alert alert-danger small p-2 mb-0">
+                                    <i class="bi bi-x-circle me-1"></i>Chứng chỉ này đã bị thu hồi.
+                                </div>
+                            {% else %}
+                                <div class="text-muted small">
+                                    <i class="bi bi-hourglass-split me-1"></i>Đang trong quá trình xử lý.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card-body text-center text-muted py-5">
+            <i class="bi bi-award fs-1 d-block mb-2 opacity-25"></i>
+            Bạn chưa có chứng chỉ nào được cấp phát.
+        </div>
+    {% endif %}
+</div>
+
+<!-- Issuance request history -->
+<div class="card shadow-sm">
+    <div class="card-header bg-white d-flex align-items-center gap-2">
+        <i class="bi bi-clock-history text-info"></i>
+        <strong>Lịch sử hồ sơ cấp phát</strong>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle mb-0 small">
+            <thead>
+                <tr>
+                    <th>Mã hồ sơ</th>
+                    <th>Loại chứng chỉ</th>
+                    <th>Ngày nộp</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in issuance_requests %}
+                    <tr>
+                        <td class="font-monospace">{{ req.request_code }}</td>
+                        <td>{{ req.credential_type.name }}</td>
+                        <td>{{ req.requested_at|date:"d/m/Y" }}</td>
+                        <td>
+                            <span class="badge text-bg-{% if req.status == 'PUBLISHED' %}success{% elif req.status == 'REJECTED' or req.status == 'REVOKED' %}danger{% elif req.status == 'FINAL_APPROVED' or req.status == 'SIGNED' %}success{% else %}secondary{% endif %}">
+                                {{ req.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-center py-4 text-muted">Chưa có hồ sơ.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}

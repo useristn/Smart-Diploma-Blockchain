@@ -1,0 +1,84 @@
+<aside class="sidebar border-end p-3">
+    <a href="{% url 'core:dashboard' %}" class="sidebar-brand d-flex align-items-center gap-2 text-decoration-none mb-4">
+        <div class="brand-icon"><i class="bi bi-shield-lock-fill"></i></div>
+        <div>
+            <div class="brand-text">Credential Ledger</div>
+            <div class="brand-sub">{{ system_short_name }}</div>
+        </div>
+    </a>
+
+    {% if request.user.role == 'STUDENT' %}
+    {# ── Student-only navigation ── #}
+    <div class="sidebar-section">Sinh viên</div>
+    <nav class="nav flex-column gap-0 mb-2">
+        <a class="nav-link {% if request.resolver_match.url_name == 'portal' %}active{% endif %}" href="{% url 'students:portal' %}">
+            <i class="bi bi-person-badge"></i> Cổng của tôi
+        </a>
+        <a class="nav-link" href="{% url 'public_portal:home' %}" target="_blank">
+            <i class="bi bi-globe2"></i> Xác thực công khai
+            <i class="bi bi-box-arrow-up-right ms-auto" style="font-size:.7rem;opacity:.5"></i>
+        </a>
+    </nav>
+
+    {% else %}
+    {# ── Staff / Admin navigation ── #}
+    <div class="sidebar-section">Tổng quan</div>
+    <nav class="nav flex-column gap-0 mb-2">
+        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'core:dashboard' %}">
+            <i class="bi bi-grid-1x2"></i> Dashboard
+        </a>
+    </nav>
+    <div class="sidebar-section">Quản lý</div>
+    <nav class="nav flex-column gap-0 mb-2">
+        <a class="nav-link {% if request.resolver_match.app_name == 'organizations' %}active{% endif %}" href="{% url 'organizations:list' %}">
+            <i class="bi bi-building"></i> Tổ chức
+        </a>
+        <a class="nav-link {% if request.resolver_match.app_name == 'accounts' %}active{% endif %}" href="{% url 'accounts:user_list' %}">
+            <i class="bi bi-people"></i> Người dùng
+        </a>
+        <a class="nav-link {% if request.resolver_match.app_name == 'students' and request.resolver_match.url_name != 'portal' %}active{% endif %}" href="{% url 'students:list' %}">
+            <i class="bi bi-mortarboard"></i> Sinh viên
+        </a>
+    </nav>
+    <div class="sidebar-section">Đào tạo</div>
+    <nav class="nav flex-column gap-0 mb-2">
+        <a class="nav-link {% if request.resolver_match.url_name == 'program_list' %}active{% endif %}" href="{% url 'academics:program_list' %}">
+            <i class="bi bi-journal-bookmark"></i> Chương trình
+        </a>
+        <a class="nav-link {% if request.resolver_match.url_name == 'course_list' %}active{% endif %}" href="{% url 'academics:course_list' %}">
+            <i class="bi bi-book"></i> Học phần
+        </a>
+    </nav>
+    <div class="sidebar-section">Chứng chỉ</div>
+    <nav class="nav flex-column gap-0 mb-2">
+        <a class="nav-link {% if request.resolver_match.app_name == 'issuance' and 'batch' not in request.resolver_match.url_name %}active{% endif %}" href="{% url 'issuance:list' %}">
+            <i class="bi bi-file-earmark-arrow-up"></i> Hồ sơ cấp phát
+        </a>
+        <a class="nav-link {% if request.resolver_match.app_name == 'issuance' and 'batch' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'issuance:batch_list' %}">
+            <i class="bi bi-layers"></i> Batch Issuance
+        </a>
+        <a class="nav-link {% if request.resolver_match.app_name == 'credentials' %}active{% endif %}" href="{% url 'credentials:list' %}">
+            <i class="bi bi-award"></i> Chứng chỉ
+        </a>
+        <a class="nav-link {% if request.resolver_match.app_name == 'policy_engine' %}active{% endif %}" href="{% url 'policy_engine:list' %}">
+            <i class="bi bi-cpu"></i> Chính sách
+        </a>
+    </nav>
+    <div class="sidebar-section">Hệ thống</div>
+    <nav class="nav flex-column gap-0">
+        <a class="nav-link {% if request.resolver_match.app_name == 'ledger' %}active{% endif %}" href="{% url 'ledger:list' %}">
+            <i class="bi bi-link-45deg"></i> Ledger
+        </a>
+        <a class="nav-link {% if request.resolver_match.app_name == 'audit' %}active{% endif %}" href="{% url 'audit:list' %}">
+            <i class="bi bi-clipboard-check"></i> Kiểm toán
+        </a>
+        <a class="nav-link {% if request.resolver_match.app_name == 'reports' %}active{% endif %}" href="{% url 'reports:summary' %}">
+            <i class="bi bi-bar-chart-line"></i> Báo cáo
+        </a>
+        <a class="nav-link" href="{% url 'public_portal:home' %}" target="_blank">
+            <i class="bi bi-globe2"></i> Cổng xác thực
+            <i class="bi bi-box-arrow-up-right ms-auto" style="font-size:.7rem;opacity:.5"></i>
+        </a>
+    </nav>
+    {% endif %}
+</aside>

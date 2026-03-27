@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block page_title %}Chi tiết ledger event{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h4 mb-3">Event #{{ event.sequence_no }} - {{ event.event_type }}</h2>
+        <dl class="row">
+            <dt class="col-sm-3">Entity</dt><dd class="col-sm-9">{{ event.entity_type }} / {{ event.entity_id }}</dd>
+            <dt class="col-sm-3">Actor</dt><dd class="col-sm-9">{{ event.actor_user|default:"System" }}</dd>
+            <dt class="col-sm-3">Previous hash</dt><dd class="col-sm-9 small">{{ event.previous_hash }}</dd>
+            <dt class="col-sm-3">Current hash</dt><dd class="col-sm-9 small">{{ event.current_hash }}</dd>
+            <dt class="col-sm-3">Payload</dt><dd class="col-sm-9"><pre class="mb-0">{{ event.payload_json|safe }}</pre></dd>
+        </dl>
+    </div>
+</div>
+{% endblock %}

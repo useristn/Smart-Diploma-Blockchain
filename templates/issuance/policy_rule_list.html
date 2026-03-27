@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block page_title %}Policy rules{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Mã</th><th>Tên</th><th>Loại</th><th>Priority</th><th>Active</th></tr></thead>
+            <tbody>
+                {% for rule in rules %}
+                    <tr>
+                        <td><a href="{% url 'policy_engine:detail' rule.pk %}">{{ rule.code }}</a></td>
+                        <td>{{ rule.name }}</td>
+                        <td>{{ rule.get_rule_type_display }}</td>
+                        <td>{{ rule.priority }}</td>
+                        <td>{{ rule.active|yesno:"Có,Không" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">Chưa có rule.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

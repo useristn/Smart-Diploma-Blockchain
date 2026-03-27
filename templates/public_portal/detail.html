@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Kết quả xác thực{% endblock %}
+
+{% block public_content %}
+<div class="row justify-content-center">
+    <div class="col-xl-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-4 p-lg-5">
+                {% if credential %}
+                    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+                        <div>
+                            <div class="text-uppercase small text-muted fw-semibold ls-wide mb-1">
+                                <i class="bi bi-shield-check me-1"></i>Verification Result
+                            </div>
+                            <h1 class="h3 mb-1 fw-bold">{{ credential.credential_type.name }}</h1>
+                            <div class="text-muted">
+                                <i class="bi bi-person me-1"></i>{{ verify_context.owner_name }}
+                                <span class="mx-1">·</span>
+                                <i class="bi bi-building me-1"></i>{{ verify_context.issuer_name }}
+                            </div>
+                        </div>
+                        <span class="badge fs-6 py-2 px-3 {% if verify_context.status == 'PUBLISHED' %}text-bg-success badge-verify-success{% elif verify_context.status == 'REVOKED' %}text-bg-danger badge-verify-danger{% else %}text-bg-warning{% endif %}">
+                            <i class="bi {% if verify_context.status == 'PUBLISHED' %}bi-check-circle{% elif verify_context.status == 'REVOKED' %}bi-x-circle{% else %}bi-exclamation-circle{% endif %} me-1"></i>
+                            {{ verify_context.public_status }}
+                        </span>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="verify-field h-100">
+                                <div class="small text-muted mb-1"><i class="bi bi-hash me-1"></i>Serial number</div>
+                                <div class="fw-semibold">{{ verify_context.serial_number }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="verify-field h-100">
+                                <div class="small text-muted mb-1"><i class="bi bi-key me-1"></i>Verification code</div>
+                                <div class="fw-semibold">{{ verify_context.verification_code }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="verify-field h-100">
+                                <div class="small text-muted mb-1"><i class="bi bi-fingerprint me-1"></i>Payload fingerprint</div>
+                                <div class="fw-semibold font-monospace small">{{ verify_context.payload_fingerprint }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="verify-field h-100">
+                                <div class="small text-muted mb-1"><i class="bi bi-file-earmark-binary me-1"></i>PDF fingerprint</div>
+                                <div class="fw-semibold font-monospace small">{{ verify_context.pdf_fingerprint }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3 p-3 rounded-3 {% if verify_context.signature_valid %}bg-success{% else %}bg-danger{% endif %} bg-opacity-10">
+                                <div class="verify-status-icon {% if verify_context.signature_valid %}bg-success{% else %}bg-danger{% endif %} bg-opacity-25 {% if verify_context.signature_valid %}text-success{% else %}text-danger{% endif %}">
+                                    <i class="bi {% if verify_context.signature_valid %}bi-check-lg{% else %}bi-x-lg{% endif %}"></i>
+                                </div>
+                                <div>
+                                    <div class="small text-muted">Signature verification</div>
+                                    <div class="fw-semibold {% if verify_context.signature_valid %}text-success{% else %}text-danger{% endif %}">
+                                        {{ verify_context.signature_valid|yesno:"Hợp lệ,Không hợp lệ" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3 p-3 rounded-3 {% if verify_context.ledger_valid %}bg-success{% else %}bg-danger{% endif %} bg-opacity-10">
+                                <div class="verify-status-icon {% if verify_context.ledger_valid %}bg-success{% else %}bg-danger{% endif %} bg-opacity-25 {% if verify_context.ledger_valid %}text-success{% else %}text-danger{% endif %}">
+                                    <i class="bi {% if verify_context.ledger_valid %}bi-check-lg{% else %}bi-x-lg{% endif %}"></i>
+                                </div>
+                                <div>
+                                    <div class="small text-muted">Ledger verification</div>
+                                    <div class="fw-semibold {% if verify_context.ledger_valid %}text-success{% else %}text-danger{% endif %}">
+                                        {{ verify_context.ledger_valid|yesno:"Hợp lệ,Không hợp lệ" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if verify_context.public_note %}
+                        <div class="alert alert-warning d-flex align-items-center gap-2">
+                            <i class="bi bi-info-circle"></i>{{ verify_context.public_note }}
+                        </div>
+                    {% endif %}
+                    {% if verify_context.superseded_by %}
+                        <div class="alert alert-info d-flex align-items-center gap-2">
+                            <i class="bi bi-arrow-repeat"></i>
+                            Bản này đã được thay thế.
+                            <a href="{% url 'public_portal:detail' verify_context.superseded_by.public_slug %}" class="fw-semibold">Mở bản mới →</a>
+                        </div>
+                    {% endif %}
+                    {% if verify_context.allow_public_pdf and credential.pdf_file %}
+                        <a class="btn btn-outline-primary" href="{{ credential.pdf_file.url }}" target="_blank">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Xem PDF công khai
+                        </a>
+                    {% endif %}
+
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <a href="{% url 'public_portal:home' %}" class="text-muted small">
+                            <i class="bi bi-arrow-left me-1"></i>Tra cứu chứng chỉ khác
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width:64px;height:64px;background:rgba(234,179,8,0.1)">
+                            <i class="bi bi-exclamation-triangle text-warning fs-2"></i>
+                        </div>
+                        <h3 class="fw-bold mb-2">Không tìm thấy chứng chỉ</h3>
+                        <p class="text-muted mb-3">Mã tra cứu không khớp với bất kỳ chứng chỉ nào trong hệ thống.</p>
+                        <a href="{% url 'public_portal:home' %}" class="btn btn-primary">
+                            <i class="bi bi-arrow-left me-1"></i>Thử lại
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

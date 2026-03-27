@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block page_title %}Verify chain{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        {% if report.ok %}
+            <div class="alert alert-success">Ledger chain hợp lệ. Đã kiểm tra {{ report.checked }} event.</div>
+        {% else %}
+            <div class="alert alert-danger">Ledger chain có lỗi integrity.</div>
+            <pre>{{ report.issues|safe }}</pre>
+        {% endif %}
+        <div class="small text-muted">Last hash: {{ report.last_hash }}</div>
+    </div>
+</div>
+{% endblock %}

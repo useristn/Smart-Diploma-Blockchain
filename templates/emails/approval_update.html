@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="utf-8"></head>
+<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
+    <div style="border-bottom:3px solid #1d4ed8;padding-bottom:12px;margin-bottom:20px">
+        <strong style="color:#0f172a">{{ system_name }}</strong>
+    </div>
+    <h2 style="color:#0f172a">Cập nhật phê duyệt hồ sơ</h2>
+    <p>Xin chào,</p>
+    <p>Hồ sơ cấp phát <strong>{{ request_obj.request_code }}</strong> cho sinh viên <strong>{{ student.full_name }}</strong> ({{ student.student_code }}) đã được cập nhật.</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+        <tr><td style="padding:8px;border:1px solid #e2e8f0;background:#f8fafc"><strong>Bước</strong></td><td style="padding:8px;border:1px solid #e2e8f0">{{ step.get_step_type_display }}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #e2e8f0;background:#f8fafc"><strong>Kết quả</strong></td><td style="padding:8px;border:1px solid #e2e8f0">{% if approved %}<span style="color:#16a34a">✅ Đã phê duyệt</span>{% else %}<span style="color:#dc2626">❌ Từ chối</span>{% endif %}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #e2e8f0;background:#f8fafc"><strong>Trạng thái hồ sơ</strong></td><td style="padding:8px;border:1px solid #e2e8f0">{{ request_obj.get_status_display }}</td></tr>
+    </table>
+    {% if step.note %}<p><strong>Ghi chú:</strong> {{ step.note }}</p>{% endif %}
+    <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0">
+    <p style="color:#94a3b8;font-size:12px">{{ system_name }} · Email tự động, vui lòng không trả lời.</p>
+</body>
+</html>

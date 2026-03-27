@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block page_title %}Chi tiết tổ chức{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <div class="text-muted small">{{ organization.code }}</div>
+                        <h2 class="h4 mb-1">{{ organization.name }}</h2>
+                        <div class="text-muted">{{ organization.get_organization_type_display }}</div>
+                    </div>
+                    <a class="btn btn-outline-primary" href="{% url 'organizations:update' organization.pk %}">Chỉnh sửa</a>
+                </div>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Địa chỉ</dt><dd class="col-sm-8">{{ organization.address|default:"-" }}</dd>
+                    <dt class="col-sm-4">Email liên hệ</dt><dd class="col-sm-8">{{ organization.contact_email|default:"-" }}</dd>
+                    <dt class="col-sm-4">Ledger writer</dt><dd class="col-sm-8">{{ organization.can_write_ledger|yesno:"Có,Không" }}</dd>
+                    <dt class="col-sm-4">Approve node</dt><dd class="col-sm-8">{{ organization.can_approve|yesno:"Có,Không" }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

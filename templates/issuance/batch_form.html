@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block page_title %}Tạo Batch Issuance mới{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <strong><i class="bi bi-layers me-1 text-primary"></i>Tạo Batch Issuance (Merkle)</strong>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-4">
+                    Tạo một batch gom nhiều hồ sơ cấp phát lại với nhau. Sau khi tạo, bấm
+                    <strong>Commit</strong> để tính Merkle root từ tất cả credential payload hash
+                    và ghi vào ledger — tương tự việc đóng một block trong blockchain.
+                </p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ form.name.label }}</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger small">{{ form.name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ form.description.label }}</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">{{ form.requests.label }}</label>
+                        <div class="border rounded p-3" style="max-height:320px;overflow-y:auto;">
+                            {% for choice in form.requests %}
+                                <div class="form-check mb-1">
+                                    {{ choice.tag }}
+                                    <label class="form-check-label small" for="{{ choice.id_for_label }}">
+                                        {{ choice.choice_label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-text">{{ form.requests.help_text }}</div>
+                        {% if form.requests.errors %}
+                            <div class="text-danger small">{{ form.requests.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i>Tạo Batch
+                        </button>
+                        <a href="{% url 'issuance:batch_list' %}" class="btn btn-outline-secondary">Huỷ</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

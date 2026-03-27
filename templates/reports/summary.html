@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block page_title %}Báo cáo{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <p class="text-muted mb-0">Tổng hợp số liệu phát hành, trạng thái và verification.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-primary" href="{% url 'reports:export_csv' %}">
+            <i class="bi bi-filetype-csv me-1"></i>Xuất CSV
+        </a>
+        <a class="btn btn-primary" href="{% url 'reports:export_pdf' %}">
+            <i class="bi bi-file-earmark-pdf me-1"></i>Xuất PDF
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-xl">
+        <div class="card kpi-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Tổng chứng chỉ</div>
+                <div class="display-6 fw-bold">{{ summary.credentials_total }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl">
+        <div class="card kpi-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Hồ sơ</div>
+                <div class="display-6 fw-bold">{{ summary.issuance_requests_total }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl">
+        <div class="card kpi-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Lượt verify</div>
+                <div class="display-6 fw-bold">{{ summary.verification_total }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl">
+        <div class="card kpi-card shadow-sm h-100 border-danger-subtle">
+            <div class="card-body">
+                <div class="text-muted small">Đã thu hồi</div>
+                <div class="display-6 fw-bold text-danger">{{ summary.revoked_total }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl">
+        <div class="card kpi-card shadow-sm h-100 border-warning-subtle">
+            <div class="card-body">
+                <div class="text-muted small">Bị từ chối</div>
+                <div class="display-6 fw-bold text-warning">{{ summary.rejected_requests_total }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white"><strong>Theo trạng thái</strong></div>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Trạng thái</th><th class="text-end">Số lượng</th></tr></thead>
+                    <tbody>
+                        {% for status, count in summary.by_status.items %}
+                        <tr>
+                            <td><span class="badge text-bg-secondary">{{ status }}</span></td>
+                            <td class="text-end fw-semibold">{{ count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-center text-muted py-3">Chưa có dữ liệu</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white"><strong>Theo loại</strong></div>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Loại chứng chỉ</th><th class="text-end">Số lượng</th></tr></thead>
+                    <tbody>
+                        {% for type, count in summary.by_type.items %}
+                        <tr>
+                            <td>{{ type }}</td>
+                            <td class="text-end fw-semibold">{{ count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-center text-muted py-3">Chưa có dữ liệu</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white"><strong>Theo khoa</strong></div>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Khoa</th><th class="text-end">Số lượng</th></tr></thead>
+                    <tbody>
+                        {% for faculty, count in summary.by_faculty.items %}
+                        <tr>
+                            <td>{{ faculty }}</td>
+                            <td class="text-end fw-semibold">{{ count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-center text-muted py-3">Chưa có dữ liệu</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

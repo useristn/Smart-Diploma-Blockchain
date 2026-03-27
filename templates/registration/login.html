@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Đăng nhập{% endblock %}
+
+{% block public_content %}
+<div class="row justify-content-center">
+    <div class="col-lg-5 col-xl-4">
+        <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width:56px;height:56px;background:linear-gradient(135deg,#3b82f6,#8b5cf6)">
+                <i class="bi bi-shield-lock-fill text-white fs-3"></i>
+            </div>
+        </div>
+        <div class="card border-0 shadow-lg">
+            <div class="card-body p-4 p-lg-5">
+                <div class="mb-4 text-center">
+                    <div class="text-uppercase small text-muted fw-semibold ls-wide">{{ system_short_name }}</div>
+                    <h1 class="h3 mb-1 fw-bold">Đăng nhập hệ thống</h1>
+                    <p class="text-muted mb-0 small">Nền tảng cấp phát và xác thực chứng chỉ số cho môi trường đại học.</p>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label small fw-semibold text-muted">{{ field.label }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                {% if forloop.first %}
+                                    <i class="bi bi-person text-muted"></i>
+                                {% else %}
+                                    <i class="bi bi-lock text-muted"></i>
+                                {% endif %}
+                            </span>
+                            <input type="{{ field.field.widget.input_type|default:'text' }}"
+                                   name="{{ field.html_name }}"
+                                   id="{{ field.id_for_label }}"
+                                   class="form-control border-start-0 {% if field.errors %}is-invalid{% endif %}"
+                                   placeholder="{{ field.label }}"
+                                   {% if forloop.first %}autofocus{% endif %}>
+                        </div>
+                        {% for error in field.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    <button class="btn btn-primary w-100 py-2 mt-2" type="submit">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập
+                    </button>
+                </form>
+            </div>
+        </div>
+        <p class="text-center mt-3 small" style="color:#64748b">
+            <i class="bi bi-link-45deg"></i> Powered by Blockchain-Inspired Ledger
+        </p>
+    </div>
+</div>
+{% endblock %}

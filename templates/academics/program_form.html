@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block page_title %}Cấu hình chương trình{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary" type="submit">Lưu chương trình</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

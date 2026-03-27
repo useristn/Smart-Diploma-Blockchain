@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block page_title %}Hồ sơ cá nhân{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" type="submit">Lưu thay đổi</button>
+                <a class="btn btn-outline-secondary" href="{% url 'accounts:change_password' %}">Đổi mật khẩu</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

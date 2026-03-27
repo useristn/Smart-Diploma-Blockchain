@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block page_title %}Chi tiết hồ sơ{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="small text-muted">{{ issuance_request.request_code }}</div>
+                <h2 class="h4">{{ issuance_request.student.full_name }}</h2>
+                <p class="text-muted">{{ issuance_request.credential_type.name }} · {{ issuance_request.get_status_display }}</p>
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Template</dt><dd class="col-sm-7">{{ issuance_request.template.name }}</dd>
+                    <dt class="col-sm-5">Người tạo</dt><dd class="col-sm-7">{{ issuance_request.requested_by }}</dd>
+                    <dt class="col-sm-5">Ghi chú</dt><dd class="col-sm-7">{{ issuance_request.notes|default:"-" }}</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white"><strong>Thao tác</strong></div>
+            <div class="card-body d-grid gap-2">
+                <form method="post" action="{% url 'issuance:evaluate' issuance_request.pk %}">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-primary w-100" type="submit">Chạy rule evaluation</button>
+                </form>
+                {% if issuance_request.status == "FINAL_APPROVED" %}
+                    <form method="post" action="{% url 'issuance:issue' issuance_request.pk %}">
+                        {% csrf_token %}
+                        <button class="btn btn-primary w-100" type="submit">Sinh chứng chỉ</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white"><strong>Approval workflow</strong></div>
+            <div class="card-body">
+                {% for step in approval_steps %}
+                    <div class="border rounded-3 p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="fw-semibold">{{ step.get_step_type_display }}</div>
+                                <div class="small text-muted">Role xử lý: {{ step.assigned_to_role }}</div>
+                            </div>
+                            <span class="badge text-bg-secondary">{{ step.get_status_display }}</span>
+                        </div>
+                        {% if step.note %}<div class="small mt-2">{{ step.note }}</div>{% endif %}
+                        {% if step.status == "PENDING" %}
+                            <form class="mt-3" method="post" action="{% url 'issuance:approval_action' issuance_request.pk step.step_type 'approve' %}">
+                                {% csrf_token %}
+                                {{ approval_form.as_p }}
+                                <button class="btn btn-success btn-sm" type="submit">Approve</button>
+                                <button class="btn btn-outline-danger btn-sm" formaction="{% url 'issuance:approval_action' issuance_request.pk step.step_type 'reject' %}" type="submit">Reject</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-white"><strong>Kết quả policy evaluation</strong></div>
+            <div class="card-body">
+                {% for evaluation in evaluations %}
+                    <div class="border rounded-3 p-3 mb-3">
+                        <div class="d-flex justify-content-between">
+                            <div class="fw-semibold">{{ evaluation.rule.name }}</div>
+                            <span class="badge {% if evaluation.result %}text-bg-success{% else %}text-bg-danger{% endif %}">
+                                {{ evaluation.result|yesno:"PASS,FAIL" }}
+                            </span>
+                        </div>
+                        <pre class="small mt-2 mb-0">{{ evaluation.detail_json|safe }}</pre>
+                    </div>
+                {% empty %}
+                    <div class="text-muted">Chưa chạy đánh giá policy.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

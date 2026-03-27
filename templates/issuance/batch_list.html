@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block page_title %}Batch Issuance (Merkle){% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="text-muted mb-0">Mỗi batch commit Merkle root lên ledger – mô phỏng block-level anchoring (Chương 2).</p>
+    <a class="btn btn-primary" href="{% url 'issuance:batch_create' %}">
+        <i class="bi bi-plus-circle me-1"></i>Tạo batch mới
+    </a>
+</div>
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Batch Code</th>
+                    <th>Tên</th>
+                    <th>Số hồ sơ</th>
+                    <th>Merkle Root</th>
+                    <th>Trạng thái</th>
+                    <th>Committed lúc</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for batch in batches %}
+                    <tr>
+                        <td class="font-monospace small">{{ batch.batch_code }}</td>
+                        <td>{{ batch.name }}</td>
+                        <td>{{ batch.requests.count }}</td>
+                        <td>
+                            {% if batch.merkle_root %}
+                                <span class="font-monospace small text-success" title="{{ batch.merkle_root }}">
+                                    {{ batch.merkle_root|truncatechars:18 }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted small">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if batch.is_committed %}
+                                <span class="badge text-bg-success"><i class="bi bi-check2-circle me-1"></i>Đã commit</span>
+                            {% else %}
+                                <span class="badge text-bg-warning text-dark">Nháp</span>
+                            {% endif %}
+                        </td>
+                        <td class="small text-muted">{{ batch.committed_at|date:"d/m/Y H:i"|default:"—" }}</td>
+                        <td>
+                            <a href="{% url 'issuance:batch_detail' batch.pk %}" class="btn btn-sm btn-outline-primary">
+                                Chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="text-center py-4 text-muted">Chưa có batch nào.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

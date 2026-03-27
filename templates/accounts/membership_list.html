@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block page_title %}Membership tổ chức{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="text-muted mb-0">Gán quyền và đơn vị cho người dùng.</p>
+    <a class="btn btn-primary" href="{% url 'accounts:membership_create' %}">Gán membership</a>
+</div>
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Người dùng</th><th>Tổ chức</th><th>Vai trò</th><th>Primary</th><th>Active</th></tr></thead>
+            <tbody>
+                {% for membership in memberships %}
+                    <tr>
+                        <td>{{ membership.user }}</td>
+                        <td>{{ membership.organization }}</td>
+                        <td>{{ membership.get_role_display }}</td>
+                        <td>{{ membership.is_primary|yesno:"Có,Không" }}</td>
+                        <td>{{ membership.is_active|yesno:"Có,Không" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">Chưa có membership.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
